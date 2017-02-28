@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html ng-app>
+<head>
+<title>Coinage </title>
+
+    <style>
+        .encompass {
+            border:1px solid silver;
+            width:40%;
+        }
+     div.encompass> div:nth-of-type(2) {
+            background: #eeeeff;
+         color:darkblue;
+         font-weight:bold;
+        padding:2px;
+        }
+        input[type="text"]{
+            width:100px;
+        }
+    div.encompass> div:nth-of-type(odd) {
+            background: #d3d3ff;
+        padding:2px;
+        color:darkblue;
+       margin:auto;
+        text-align: center;
+        }
+        input[type="text"]{
+            width:100px;
+        }
+     div.encompass> div:nth-of-type(1) {
+            background: #d3d3ff;
+        padding:2px;
+        color:darkblue;
+         font-weight:bold;
+         text-align: left;
+         padding-left: 10px;
+        }
+        input[type="text"]{
+            width:100px;
+        }
+        table {
+            width:99%;
+            padding: 0px;
+            margin:  0px 2px 2px 2px; 
+            border:1px solid silver;
+        }
+        table  tr   th{
+            color:darkblue;
+        }
+         table  tr   th:nth-of-type(1){
+            float: left;
+        }
+         table  tr   th:nth-of-type(2){
+            float: right;
+        }
+    tr:nth-of-type(odd) {
+            background: #f3f3f3;
+        padding:0px;}
+        td {
+    margin:0px;
+            padding:0px;
+        }
+    </style>
+</head>
+<body>
+<div class="encompass" ng-controller="CoinageController">
+    <div><h3>Coinage version 1.0</h3></div>
+    <div>
+	 Enter Monetary Value for coin conversion:<input type="text" ng-model="poundValue"/>
+	<button ng-click="convert()">Convert</button>
+        </div>
+    <div> coverting {{poundsToPennies1}} pennies into coins
+    </div>
+    <div>
+    <table>
+      <tr>
+          <th>Coin</th>
+          <th>Amount</th>
+      </tr>
+   
+	<tr ng-repeat = "denomNumber in denomNumberList">
+      <td>{{denomNumber.coin}}</td><td>{{denomNumber.number}}</td> 
+    </tr>
+     </table>
+	 </div>
+    <div> @ coinage 2017
+    </div>
+</div>
+    <script type="text/javascript" 
+	src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+<script type="text/javascript">
+	function CoinageController($scope) {
+        $scope.coinunits = [
+            {
+                display: '#2',
+                penyValue: 200
+            },
+            { display: '#1',
+                penyValue:100
+            },
+            { display: '50p',
+                penyValue:50
+            },
+            { display: '20p',
+                penyValue:20
+            },
+            { display: '2p',
+                penyValue:2
+            },
+            { display: '1p',
+                penyValue:1
+            }
+        ];
+	    $scope.denomNumberList = [  {
+              coin: '#2',
+              number:1
+          }, {
+              coin: '#1',
+              number:1
+          }
+            , {
+              coin: '50p',
+              number:0
+          }, {
+              coin: '20p',
+              number:2
+          }, {
+              coin: '2p',
+              number:2
+          }, {
+              coin: '1p',
+              number:1
+          }];
+        $scope.poundValue= '3.45';
+        $scope.poundsToPennies1 = $scope.poundValue * 100;
+	    $scope.convert = function() {
+            var multiplyBy100 = 100 ;
+            if ($scope.poundValue.charAt(0)=='#'    )
+                $scope.poundValue =    $scope.poundValue.replace('#','');
+            if ($scope.poundValue.charAt($scope.poundValue.length-1)=='p'    ){
+                  $scope.poundValue =    $scope.poundValue.substring(0,$scope.poundValue.length-1);
+                multiplyBy100=1 ;
+            }
+            if (isNaN($scope.poundValue)){
+                alert('invalid number');
+                return ;
+            }
+            $scope.poundsToPennies1 = Math.round($scope.poundValue * multiplyBy100);
+            var poundsToPennies = $scope.poundsToPennies1;
+            coinunitsIndex = 0;
+            $scope.denomNumberList = [];
+            while (poundsToPennies!=0){
+                var currentCoinUnit = parseInt($scope.coinunits[coinunitsIndex].penyValue);
+                var currentCoinDisplayUnit = $scope.coinunits[coinunitsIndex++].display;
+                var numUnits = parseInt(poundsToPennies/currentCoinUnit);
+                var denomNumber = {
+                    coin: currentCoinDisplayUnit,
+                    number : numUnits
+                };
+                poundsToPennies %= currentCoinUnit;
+                 $scope.denomNumberList.splice(0,0,denomNumber);
+            }
+		
+
+	    }
+	}
+</script>
+</body>
